@@ -1,4 +1,4 @@
-package Model.Dao;
+package model.dao;
 
 public class UserDAO {
 

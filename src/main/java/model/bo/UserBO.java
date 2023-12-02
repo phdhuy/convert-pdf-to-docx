@@ -1,5 +1,12 @@
 package model.bo;
 
-public class UserBO {
+import java.util.Optional;
+
+import model.bean.User;
+
+public interface UserBO {
 	
+	void createUser(String username, String password, String firstname, String lastname);
+	
+	Optional<User> getUserById(int id);
 }

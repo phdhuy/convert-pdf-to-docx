@@ -8,7 +8,7 @@ public interface Dao<T> {
 	
 	List<T> getAll();
 	
-	Optional<T> get(UUID id);
+	Optional<T> get(int id);
 	
 	void save(T t);
 	

@@ -1,10 +1,9 @@
 package model.bean;
 
-import java.util.UUID;
 
 public class User {
 
-	private UUID id;
+	private int id;
 	
 	private String username;
 	
@@ -14,11 +13,11 @@ public class User {
 	
 	private String lastname;
 	
-	public void setId(UUID id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
-	public UUID getId() {
+	public int getId() {
 		return id;
 	}
 	

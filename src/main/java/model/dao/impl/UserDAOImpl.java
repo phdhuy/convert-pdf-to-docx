@@ -136,7 +136,8 @@ public class UserDAOImpl implements UserDao {
 
 		        ResultSet rs = pstm.executeQuery();
 		        
-		        if(rs.getFetchSize() > 0) {
+		        if(rs.next())
+		        {
 		        	check = true;
 		        }
 		    } catch (ClassNotFoundException | SQLException e) {

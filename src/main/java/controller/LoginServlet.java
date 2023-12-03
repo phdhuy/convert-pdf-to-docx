@@ -29,6 +29,7 @@ public class LoginServlet extends HttpServlet{
 
         if(userBO.checklogin(username, password) == true) {
         	response.sendRedirect("index.jsp");
+        	System.out.print("true");
         }
         else {
 			response.sendRedirect("login.jsp");

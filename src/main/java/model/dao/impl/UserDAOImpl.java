@@ -13,8 +13,9 @@ import java.util.UUID;
 import common.ConnectDB;
 import model.bean.User;
 import model.dao.Dao;
+import model.dao.UserDao;
 
-public class UserDAO implements Dao<User> {
+public class UserDAOImpl implements UserDao {
 	
 	Connection conn = null;
 	Statement st = null;
@@ -122,5 +123,25 @@ public class UserDAO implements Dao<User> {
 	    } catch (ClassNotFoundException | SQLException e) {
 	        e.printStackTrace();
 	    }
+	}
+
+	@Override
+	public boolean checkLogin(String username, String password) {
+		boolean check = false;
+		try (Connection conn = ConnectDB.getMySQLConnection();
+		         PreparedStatement pstm = conn.prepareStatement("SELECT * From users Where username = ? AND password = ?")) {
+
+		        pstm.setString(1, username); 
+		        pstm.setString(2, password);
+
+		        ResultSet rs = pstm.executeQuery();
+		        
+		        if(rs.getFetchSize() > 0) {
+		        	check = true;
+		        }
+		    } catch (ClassNotFoundException | SQLException e) {
+		        e.printStackTrace();
+		    }
+		return check;
 	}
 }

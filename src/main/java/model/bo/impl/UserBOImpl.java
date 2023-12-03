@@ -5,11 +5,12 @@ import java.util.Optional;
 import model.bean.User;
 import model.bo.UserBO;
 import model.dao.Dao;
-import model.dao.impl.UserDAO;
+import model.dao.UserDao;
+import model.dao.impl.UserDAOImpl;
 
 public class UserBOImpl implements UserBO{
 	
-	Dao<User> userDao = new UserDAO();
+	UserDao userDao = new UserDAOImpl();
 
 	@Override
 	public void createUser(String username, String password, String firstname, String lastname) {
@@ -26,5 +27,11 @@ public class UserBOImpl implements UserBO{
 	public Optional<User> getUserById(int id) {
 		Optional<User> user = userDao.get(id);
 		return user;
+	}
+
+	@Override
+	public boolean checklogin(String username, String password) {
+		// TODO Auto-generated method stub
+		return userDao.checkLogin(username, password);
 	}
 }

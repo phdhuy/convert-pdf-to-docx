@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>User Registration</title>
-    <link rel="stylesheet" type="text/css" href="./Resources/register.css">
+    <link rel="stylesheet" type="text/css" href="./css/register.css">
 </head>
 <body>
 

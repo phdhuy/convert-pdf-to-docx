@@ -28,8 +28,8 @@ public class LoginServlet extends HttpServlet{
         String password = request.getParameter("password");
 
         if(userBO.checklogin(username, password) == true) {
-        	response.sendRedirect("index.jsp");
-        	System.out.print("true");
+        	response.sendRedirect("inde.jsp");
+        	
         }
         else {
 			response.sendRedirect("login.jsp");

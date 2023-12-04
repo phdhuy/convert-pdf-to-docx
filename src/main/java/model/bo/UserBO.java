@@ -11,4 +11,8 @@ public interface UserBO {
 	Optional<User> getUserById(int id);
 	
 	boolean checklogin(String username, String password);
+	
+	boolean isValidUsername(String username);
+	
+	Optional<User> getUserByUsername(String username);
 }

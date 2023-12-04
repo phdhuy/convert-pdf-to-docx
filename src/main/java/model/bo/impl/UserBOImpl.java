@@ -34,4 +34,17 @@ public class UserBOImpl implements UserBO{
 		// TODO Auto-generated method stub
 		return userDao.checkLogin(username, password);
 	}
+
+	@Override
+	public boolean isValidUsername(String username) {
+		// TODO Auto-generated method stub
+		return userDao.isValidUsername(username);
+	}
+
+	@Override
+	public Optional<User> getUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		Optional<User> user = userDao.findByUsername(username);
+		return user;
+	}
 }

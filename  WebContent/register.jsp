@@ -9,7 +9,9 @@
 <body>
 
     <h2>User Registration</h2>
-
+	<% if (request.getAttribute("errorMessage") != null) { %>
+    	<p style="color: red;"><%= request.getAttribute("errorMessage") %></p>
+	<% } %>
     <form action="RegisterServlet" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>

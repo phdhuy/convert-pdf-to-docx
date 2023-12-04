@@ -136,12 +136,58 @@ public class UserDAOImpl implements UserDao {
 
 		        ResultSet rs = pstm.executeQuery();
 		        
-		        if(rs.getFetchSize() > 0) {
+		        if(rs.next()) {
 		        	check = true;
 		        }
 		    } catch (ClassNotFoundException | SQLException e) {
 		        e.printStackTrace();
 		    }
 		return check;
+	}
+
+	@Override
+	public boolean isValidUsername(String username) {
+		boolean check = true;
+		try (Connection conn = ConnectDB.getMySQLConnection();
+		         PreparedStatement pstm = conn.prepareStatement("SELECT * From users Where username = ?")) {
+
+		        pstm.setString(1, username); 
+
+		        ResultSet rs = pstm.executeQuery();
+		        
+		        if(rs.next()) {
+		        	check = false;
+		        }
+		    } catch (ClassNotFoundException | SQLException e) {
+		        e.printStackTrace();
+		    }
+		return check;
+	}
+
+	@Override
+	public Optional<User> findByUsername(String username) {
+		try (Connection conn = ConnectDB.getMySQLConnection();
+	             PreparedStatement pstm = conn.prepareStatement("SELECT * FROM users WHERE username = ?")) {
+	            pstm.setObject(1, username);
+	            ResultSet rs = pstm.executeQuery();
+	            if (rs.next()) {
+	                int userId = rs.getInt("id");
+	                String username1 = rs.getString("username");
+	                String password = rs.getString("password");
+	                String firstname = rs.getString("firstname");
+	                String lastname = rs.getString("lastname");
+
+	                User user = new User();
+	                user.setId(userId);
+	                user.setUsername(username1);
+	                user.setPassword(password);
+	                user.setFirstname(firstname);
+	                user.setLastname(lastname);
+	                return Optional.of(user);
+	            }
+	        } catch (ClassNotFoundException | SQLException e) {
+	            e.printStackTrace();
+	        }
+	        return Optional.empty();
 	}
 }

@@ -6,10 +6,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
-import javax.swing.text.html.HTMLDocument.Iterator;
+
 
 import model.bean.User;
 import model.bean.fileUpload;
@@ -24,22 +25,22 @@ public class FileBOImpl implements FileBO {
 	private HttpServletRequest request;
     private User user;
     
+    public FileBOImpl() {};
+    
     FileDao fileDao = new FileDaoImpl();
     
     //Upload file
-    
-    public FileBOImpl(HttpServletRequest request, User user) {
+    public FileBOImpl(HttpServletRequest request, User user){
         this.request = request;
         this.user = user;
     }
-    
 	@Override
 	public void processUpload() {
 		try {
-            Iterator var2 = (Iterator) this.request.getParts().iterator();
+            Iterator var2 = this.request.getParts().iterator();
 
             while(var2.hasNext()) {
-                Part part = var2.hasNext();
+                Part part = (Part)var2.next();
                 if (part.getName().equals("files_upload")) {
                     String filename = this.extractFileName(part);
                     filename = (new File(filename)).getName();
@@ -53,10 +54,9 @@ public class FileBOImpl implements FileBO {
                     }
                 }
             }
-        } catch (Exception var6) {
+        } catch (Exception e) {
         }
 
-        new FileBOImpl(this.user).convertFiles();
 	}
 	
 	public String extractFileName(Part part) {
@@ -79,9 +79,6 @@ public class FileBOImpl implements FileBO {
     }
     
     //Convert file
-    public FileBOImpl(User user) {
-        this.user = user;
-    }
     
     @Override
     public void convertFiles() {
@@ -114,7 +111,9 @@ public class FileBOImpl implements FileBO {
 
         return folderUpload;
     }
-
+     
+	//Download file
+	
 	@Override
 	public Optional<fileUpload> getFile(int fid) {
         return fileDao.getFile(fid);

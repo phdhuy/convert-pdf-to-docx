@@ -19,7 +19,7 @@ public class FileDaoImpl implements FileDao  {
     
 	//Upload file
 	@Override
-	public void upload(String fileName, User user , int fileStatus )
+	public  void upload(String fileName, User user , int fileStatus )
 	{ 
 		try {
 		Connection conn = ConnectDB.getMySQLConnection();

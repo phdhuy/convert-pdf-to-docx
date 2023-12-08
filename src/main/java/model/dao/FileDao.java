@@ -7,7 +7,7 @@ import model.bean.*;
  
 public interface FileDao {
 	//upload file 
-	void upload(String fileName, User user , int status);
+	void upload(String fileName,int userId , int status);
 	
 	boolean isFileExist(String fileName);
 	

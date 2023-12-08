@@ -30,27 +30,31 @@ public class FileBOImpl implements FileBO {
     FileDao fileDao = new FileDaoImpl();
     
     //Upload file
+    
     public FileBOImpl(HttpServletRequest request, User user){
         this.request = request;
         this.user = user;
     }
 	@Override
-	public void processUpload() {
+	public void processUpload(int userId, HttpServletRequest req) {
 		try {
-            Iterator var2 = this.request.getParts().iterator();
-
-            while(var2.hasNext()) {
-                Part part = (Part)var2.next();
-                if (part.getName().equals("files_upload")) {
+            Iterator iterator = req.getParts().iterator();
+            String folderPath = "pdfs";
+            while(iterator.hasNext()) {
+                Part part = (Part)iterator.next();
+                if (part.getName().equals("files")) {
                     String filename = this.extractFileName(part);
                     filename = (new File(filename)).getName();
-
                     try {
-                        File file = new File(this.getFolderUpload(), filename);
+                    	 File folderUpload = new File(System.getProperty("user.home") + "/" + folderPath);
+                         if (!folderUpload.exists()) {
+                             folderUpload.mkdirs();
+                         }
+                        File file = new File(folderUpload, filename);
                         Files.copy(part.getInputStream(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        fileDao.upload(filename, this.user, 0);
-                    } catch (Exception var5) {
-                        fileDao.upload(filename, this.user, 1);
+                        fileDao.upload(filename, userId, 0);
+                    } catch (Exception e) {
+                        fileDao.upload(filename, userId, 2);
                     }
                 }
             }
@@ -67,51 +71,30 @@ public class FileBOImpl implements FileBO {
                 return s.substring(s.indexOf("=") + 2, s.length() - 1);
             }
         }
-        return "";
+        return null;
     }
-	
-	public File getFolderUpload() {
-        File folderUpload = new File(System.getProperty("user.home") + "/pdfs");
-        if (!folderUpload.exists()) {
-            folderUpload.mkdirs();
-        }
-        return folderUpload;
-    }
-    
     //Convert file
     
     @Override
-    public void convertFiles() {
-        List<fileUpload> files = fileDao.getListConverterFile(this.user);
-
-        for (fileUpload file : files) {
-            String filename = file.getFname().split("\\.")[0];
-
-            try {
-                convertFile(filename);
-                fileDao.changeStatus(file.getFid(), 2);
-            } catch (Exception e) {
-                fileDao.changeStatus(file.getFid(), 3);
-            }
-        }
+	public void convertFiles(String filename, int fileId ) {
+    	String fileName = filename.split("\\.")[0];
+    	try {
+           PdfDocument pdf = new PdfDocument();
+           String folderUpl = "pdfs";
+           File folderUpload = new File(System.getProperty("user.home") + "/" + folderUpl);
+//           System.out.print(folderUpload);
+           if (!folderUpload.exists()) {
+               folderUpload.mkdirs();
+           }
+           pdf.loadFromFile(folderUpload.getAbsolutePath() + File.separator + fileName + ".pdf");
+           pdf.close();
+           fileDao.changeStatus(fileId, 1);
+    	} catch (Exception e) {
+           
+    	}
     }
     
-	public void convertFile(String filename) throws Exception {
-        PdfDocument pdf = new PdfDocument();
-        pdf.loadFromFile(getFolderPath("pdfs").getAbsolutePath() + File.separator + filename + ".pdf");
-        pdf.saveToFile(getFolderPath("docxs").getAbsolutePath() + File.separator + filename + ".docx", FileFormat.DOCX);
-        pdf.close();
-    }
-    
-	public File getFolderPath(String folder) {
-        File folderUpload = new File(System.getProperty("user.home") + "/" + folder);
-        if (!folderUpload.exists()) {
-            folderUpload.mkdirs();
-        }
 
-        return folderUpload;
-    }
-     
 	//Download file
 	
 	@Override

@@ -19,19 +19,27 @@ public class FileDaoImpl implements FileDao  {
     
 	//Upload file
 	@Override
-	public  void upload(String fileName, User user , int fileStatus )
+	public  void upload(String fileName, int userId , int fileStatus )
 	{ 
 		try {
 		Connection conn = ConnectDB.getMySQLConnection();
         Statement stmt = (Statement)conn.createStatement();
+        
         String sql = "";
         if (!isFileExist(fileName)) {
-            sql = "INSERT INTO `uploadfiles`(`userId`, `fileName`, `fileStatus`) VALUES (" + user.getId() + ",'" + fileName + "'," + fileStatus + ")";
+        	PreparedStatement pstm = conn.prepareStatement("INSERT INTO uploadfiles (userId, fileName, fileStatus) VALUES (?, ?, ?)");
+        	pstm.setInt(1,userId);
+        	pstm.setString(2,fileName);
+        	pstm.setInt(3,fileStatus);
+        	pstm.executeUpdate();
         } else {
-            sql = "UPDATE uploadfiles set fileStatus = " + fileStatus + " where fileName = " + fileName;
+        	PreparedStatement pstm = conn.prepareStatement("UPDATE uploadfiles set fileStatus = ? where fileName = ?");
+        	pstm.setInt(1, fileStatus);
+        	pstm.setString(2, fileName);
+            pstm.executeUpdate();
         }
 
-        stmt.execute(sql);
+        
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,9 +49,11 @@ public class FileDaoImpl implements FileDao  {
 	public boolean isFileExist(String fileName) {
 		 try {
 			Connection conn = ConnectDB.getMySQLConnection();
-	        Statement stmt = (Statement)conn.createStatement();
-	        String sql = "SELECT * FROM uploadfiles WHERE fileName = '" + fileName + "'";
-	        ResultSet rs = stmt.executeQuery(sql);
+	        
+			PreparedStatement pstm = conn.prepareStatement("SELECT * FROM uploadfiles WHERE fileName = ?");
+			pstm.setString(1,fileName);
+			ResultSet rs = pstm.executeQuery();
+			
 	        return rs.next();
 		} catch (Exception e) {
 			return false;

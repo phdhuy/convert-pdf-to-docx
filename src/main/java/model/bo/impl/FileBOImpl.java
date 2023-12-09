@@ -46,7 +46,7 @@ public class FileBOImpl implements FileBO {
                     String filename = this.extractFileName(part);
                     filename = (new File(filename)).getName();
                     try {
-                    	 File folderUpload = new File(System.getProperty("user.home") + "/" + folderPath);
+                    	 File folderUpload = new File(System.getProperty("user.home")+ "/" + folderPath);
                          if (!folderUpload.exists()) {
                              folderUpload.mkdirs();
                          }
@@ -81,12 +81,16 @@ public class FileBOImpl implements FileBO {
     	try {
            PdfDocument pdf = new PdfDocument();
            String folderUpl = "pdfs";
-           File folderUpload = new File(System.getProperty("user.home") + "/" + folderUpl);
+           String folderDown = "docx";
+           File folderUpload = new File(System.getProperty("user.home") + "/"  + folderUpl);
+           File folderDownload = new File(System.getProperty("user.home")+ "/"  + folderDown);
+
 //           System.out.print(folderUpload);
            if (!folderUpload.exists()) {
                folderUpload.mkdirs();
            }
            pdf.loadFromFile(folderUpload.getAbsolutePath() + File.separator + fileName + ".pdf");
+           pdf.saveToFile(folderDownload.getAbsolutePath() + File.separator + fileName + ".docx", FileFormat.DOCX);
            pdf.close();
            fileDao.changeStatus(fileId, 1);
     	} catch (Exception e) {

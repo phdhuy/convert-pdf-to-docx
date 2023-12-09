@@ -7,12 +7,12 @@ import model.bean.*;
  
 public interface FileDao {
 	//upload file 
-	void upload(String fileName, User user , int status);
+	void upload(String fileName,int userId , int status);
 	
-	boolean isFileExist(String fileName);
+	boolean isFileExist(String fileName , int userId);
 	
 	//convert file 
-	List<fileUpload> getListConverterFile(User user);
+//	List<fileUpload> getListConverterFile(User user);
 	
 	void changeStatus(int fileId, int fileStatus);
 	

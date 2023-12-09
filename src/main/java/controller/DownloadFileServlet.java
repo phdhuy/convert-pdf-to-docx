@@ -63,38 +63,31 @@ public class DownloadFileServlet extends HttpServlet {
 		    fileUpload fileUploadObject = file.get();
 		    String fileName = fileUploadObject.getFname();
 		    String scrpath = this.GetFolderPath("docx").getAbsolutePath()+ File.separator + fileName;
+		    Path path = Paths.get(scrpath);
+		    byte[] data = Files.readAllBytes(path);
+		    response.setContentType("application/octet-stream");
+	        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
+	        response.setContentLength(data.length);
 
-		    File fileToSend = new File(scrpath);
-		    
-		    if (fileToSend.exists()) {
-		        response.setContentType("application/octet-stream");
-		        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
-		        response.setContentLength((int) fileToSend.length());
-
-		        try (InputStream inputStream = new FileInputStream(fileToSend);
-		             OutputStream outStream = response.getOutputStream()) {
-
-		            byte[] buffer = new byte[4096];
-		            int bytesRead;
-		            
-		            while ((bytesRead = inputStream.read(buffer)) != -1) {
-		                outStream.write(buffer, 0, bytesRead);
-		            }
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        }
-		    } else {
-		        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		    }
-		} else {
-		    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		}
-
-        	
+	        InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(data));
+	        OutputStream outStream = response.getOutputStream();
+	        byte[] buffer = new byte[4096];
+            int bytesRead = 1;
+            
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+	        inputStream.close();
+	        outStream.close();
+	        
+	    } else {
+	        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	    }
+    	
      }
 	
 	    private File GetFolderPath(String folderName) {
-            File folderUpload = new File(System.getProperty("user.home") + "/"+ folderName);
+            File folderUpload = new File(System.getProperty("user.home") + "/" + folderName);
             if (!folderUpload.exists()) {
                 folderUpload.mkdirs();
             }

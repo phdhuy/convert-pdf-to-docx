@@ -22,10 +22,7 @@ public class FileDaoImpl implements FileDao  {
 	public  void upload(String fileName, int userId , int fileStatus )
 	{ 
 		try {
-		Connection conn = ConnectDB.getMySQLConnection();
-        Statement stmt = (Statement)conn.createStatement();
-        
-        String sql = "";
+		Connection conn = ConnectDB.getMySQLConnection();        
         if (!isFileExist(fileName ,userId)) {
         	PreparedStatement pstm = conn.prepareStatement("INSERT INTO uploadfiles (userId, fileName, fileStatus) VALUES (?, ?, ?)");
         	pstm.setInt(1,userId);
@@ -53,6 +50,7 @@ public class FileDaoImpl implements FileDao  {
 			PreparedStatement pstm = conn.prepareStatement("SELECT * FROM uploadfiles WHERE fileName = ? and userId = ?");
 			pstm.setString(1,fileName);
 			pstm.setInt(2,userId);
+			pstm.executeUpdate();
 			ResultSet rs = pstm.executeQuery();
 			
 	        return rs.next();
@@ -87,7 +85,6 @@ public class FileDaoImpl implements FileDao  {
             Connection conn = ConnectDB.getMySQLConnection();
             PreparedStatement pstm = conn.prepareStatement("SELECT * FROM uploadfiles where fileId = ?");
             pstm.setInt(1, fId);
-            pstm.executeUpdate();
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
                 int fileId = rs.getInt("fileId");

@@ -89,10 +89,10 @@
 				                          
 					                      <td class="text-center"><%= fname %></td>
 					                      <td>
-					                         <form method="post" action="${pageContext.request.contextPath}/DownloadFileServlet">
+					                         <form method="post" action="DownloadFileServlet">
 					                            <input type="hidden" name="fileId" value="<%= rs.getInt("fileId") %>">
 					                            <div class="text-center">
-                                                   <a class="btn btn-primary" href="${pageContext.request.contextPath}/DownloadFileServlet">Download</a>
+                                                   <button class="btn btn-primary" type="submit">Download</button>
 							                    </div>
 					                         </form>
 						                  </td>

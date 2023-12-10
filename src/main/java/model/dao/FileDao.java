@@ -17,5 +17,9 @@ public interface FileDao {
 	void changeStatus(int fileId, int fileStatus);
 	
 	//dowload file
-	Optional<fileUpload> getFile(int fileId); 
+	Optional<fileUpload> getFile(int fileId);
+	
+	List<fileUpload> getAllMyFiles(int userId);
+	
+	List<fileUpload> getAllMyFilesConverted(int userId);
 }

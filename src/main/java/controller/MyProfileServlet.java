@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,7 +17,11 @@ import model.bo.impl.UserBOImpl;
 public class MyProfileServlet extends HttpServlet{
 private static final long serialVersionUID = 1L;
 	
-	UserBO userBO = new UserBOImpl();
+	private UserBO userBO;
+	
+	public MyProfileServlet() {
+		this.userBO = new UserBOImpl();
+	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

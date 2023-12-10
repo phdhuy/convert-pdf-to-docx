@@ -1,10 +1,10 @@
 package model.bo;
 
-import java.io.File;
+
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 
 import model.bean.fileUpload;
 
@@ -19,4 +19,13 @@ public interface FileBO {
 	//Dowload file
     Optional<fileUpload> getFile(int fid);
     
+    void pushFileToQueue(String fileName, int fileId);
+    
+    void checkFileInQueue();
+    
+    void startQueueChecking();
+    
+    List<fileUpload> getAllMyFiles(int userId);
+    
+    List<fileUpload> getAllMyFilesConverted(int userId);
 }

@@ -3,7 +3,6 @@ package controller;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,9 +31,11 @@ public class DownloadFileServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
+	private FileBO fileBO;
+	
     public DownloadFileServlet() {
         super();
-        // TODO Auto-generated constructor stub
+        fileBO = new FileBOImpl();
     }
 
 	/**
@@ -51,13 +52,12 @@ public class DownloadFileServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		int fileId = 0;
-		FileBO fileBo = new FileBOImpl();
 		try {
 		    fileId = Integer.parseInt(request.getParameter("fileId"));
 		} catch (Exception e) {
 		}
 
-		Optional<fileUpload> file = fileBo.getFile(fileId);
+		Optional<fileUpload> file = fileBO.getFile(fileId);
 
 		if (file.isPresent()) {
 		    fileUpload fileUploadObject = file.get();

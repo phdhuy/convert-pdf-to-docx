@@ -13,7 +13,6 @@ public class ConnectDB {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection conn = (Connection) DriverManager.getConnection(dbURL, username, password);
 		if (conn != null) {
-			System.out.println("Kết nối thành công");
 			return conn;
 		}
 		return null;

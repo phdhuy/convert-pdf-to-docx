@@ -23,6 +23,8 @@
             <input type="password" id="password" name="password" required>
             <input type="submit" value="Login">
         </form>
+        
+        <a class="nav-link register-link" href="register.jsp">Register</a>
     </div>
 
 </body>

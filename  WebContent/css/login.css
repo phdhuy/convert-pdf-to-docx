@@ -56,6 +56,19 @@ p.error-message {
     margin-top: 10px;
 }
 
+.register-link {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50; /* Green color, change it to your preferred color */
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .register-link:hover {
+        background-color: #45a049; /* Darker green color for hover effect */
+    }
+
 /* Optional: Add some styles for responsiveness */
 @media (max-width: 400px) {
     .container {

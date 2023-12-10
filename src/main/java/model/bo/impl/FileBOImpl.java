@@ -3,10 +3,12 @@ package model.bo.impl;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
@@ -25,9 +27,13 @@ public class FileBOImpl implements FileBO {
 	private HttpServletRequest request;
     private User user;
     
-    public FileBOImpl() {};
+    private static final Queue<fileUpload> fileUploadsQueue = new ConcurrentLinkedQueue<>();
+    private FileDao fileDao;
     
-    FileDao fileDao = new FileDaoImpl();
+    public FileBOImpl() {
+    	fileDao = new FileDaoImpl();
+    }
+    
     
     //Upload file
     
@@ -60,7 +66,6 @@ public class FileBOImpl implements FileBO {
             }
         } catch (Exception e) {
         }
-
 	}
 	
 	public String extractFileName(Part part) {
@@ -79,13 +84,13 @@ public class FileBOImpl implements FileBO {
 	public void convertFiles(String filename, int fileId ) {
     	String fileName = filename.split("\\.")[0];
     	try {
+    		System.out.println("In method convert");
            PdfDocument pdf = new PdfDocument();
            String folderUpl = "pdfs";
            String folderDown = "docx";
            File folderUpload = new File(System.getProperty("user.home") + "/"  + folderUpl);
            File folderDownload = new File(System.getProperty("user.home")+ "/"  + folderDown);
 
-//           System.out.print(folderUpload);
            if (!folderUpload.exists()) {
                folderUpload.mkdirs();
            }
@@ -94,16 +99,59 @@ public class FileBOImpl implements FileBO {
            pdf.close();
            fileDao.changeStatus(fileId, 1);
     	} catch (Exception e) {
-           
+           e.printStackTrace();
     	}
     }
     
 
 	//Download file
-	
 	@Override
 	public Optional<fileUpload> getFile(int fid) {
         return fileDao.getFile(fid);
 	}
-    
+	
+	@Override
+	public void pushFileToQueue(String fileName, int fileId) {
+		Optional<fileUpload> fileUpload = this.getFile(fileId);
+		if (fileUpload.isPresent()) {
+	        fileUploadsQueue.add(fileUpload.get());
+	        System.out.println("Push file " + fileUpload.get().getFid() + " to the queue successfully!");
+	    }
+	}
+	
+	
+	public void checkFileInQueue() {
+	    while (true) {
+	    	System.out.println(fileUploadsQueue.size());
+	    	if (!fileUploadsQueue.isEmpty()) {
+	            fileUpload file = fileUploadsQueue.poll();
+	            convertFiles(file.getFname(), file.getFid());
+	            System.out.println("Processed file " + file.getFid() + " from the queue.");
+	        	}
+	    	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    }
+	}
+	
+	public void startQueueChecking() {
+		Thread monitorThread = new Thread(this::checkFileInQueue);
+	    monitorThread.start();
+    }
+
+
+	@Override
+	public List<fileUpload> getAllMyFiles(int userId) {
+		// TODO Auto-generated method stub
+		return fileDao.getAllMyFiles(userId);
+	}
+
+
+	@Override
+	public List<fileUpload> getAllMyFilesConverted(int userId) {
+		// TODO Auto-generated method stub
+		return fileDao.getAllMyFilesConverted(userId);
+	}
 }

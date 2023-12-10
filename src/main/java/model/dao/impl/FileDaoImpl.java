@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,5 +103,51 @@ public class FileDaoImpl implements FileDao  {
         	e.printStackTrace();
         }
         return Optional.empty();
+	}
+
+	@Override
+	public List<fileUpload> getAllMyFiles(int userId) {
+		List<fileUpload> fileUploads = new ArrayList<fileUpload>();
+		try (Connection conn = ConnectDB.getMySQLConnection();
+	            PreparedStatement pstm = conn.prepareStatement("select fileId, fileName from uploadFiles where fileStatus = 0 and userId = ?")) {
+				pstm.setInt(1, userId);
+				ResultSet rs = pstm.executeQuery();
+				while (rs.next()) {
+					fileUpload fileUpload = new fileUpload();
+					int fileId = rs.getInt("fileId");
+					String fileName = rs.getString("fileName");
+					
+					fileUpload.setFid(fileId);
+					fileUpload.setFname(fileName);
+					
+					fileUploads.add(fileUpload);
+				}
+	        } catch (ClassNotFoundException | SQLException e) {
+	            e.printStackTrace();	      
+	        }
+		return fileUploads;
+	}
+
+	@Override
+	public List<fileUpload> getAllMyFilesConverted(int userId) {
+		List<fileUpload> fileUploads = new ArrayList<fileUpload>();
+		try (Connection conn = ConnectDB.getMySQLConnection();
+	            PreparedStatement pstm = conn.prepareStatement("select fileId, fileName from uploadFiles where fileStatus = 1 and userId = ?")) {
+				pstm.setInt(1, userId);
+				ResultSet rs = pstm.executeQuery();
+				while (rs.next()) {
+					fileUpload fileUpload = new fileUpload();
+					int fileId = rs.getInt("fileId");
+					String fileName = rs.getString("fileName");
+					
+					fileUpload.setFid(fileId);
+					fileUpload.setFname(fileName);
+					
+					fileUploads.add(fileUpload);
+				}
+	        } catch (ClassNotFoundException | SQLException e) {
+	            e.printStackTrace();	      
+	        }
+		return fileUploads;
 	}
 }

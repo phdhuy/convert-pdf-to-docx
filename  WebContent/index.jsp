@@ -1,8 +1,7 @@
-<%@page import="java.sql.ResultSet"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.sql.Connection"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="model.bean.fileUpload"%>
-<%@page import="common.ConnectDB" %>
+
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -10,7 +9,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Homepage</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -18,7 +17,7 @@
 	crossorigin="anonymous">
 </head>
 <body class="bg-light">
-    <%
+	<%
     if (session.getAttribute("id") == null) {
       response.sendRedirect("login.jsp");  
     } 
@@ -28,14 +27,14 @@
     <header>
 		  <nav class="navbar navbar-expand-lg bg-primary">
              <div class="container-fluid">
-               <a class="navbar-brand" style="color : white;" href="index.jsp">Homepage</a>
+               <a class="navbar-brand" style="color : white;" href="HomepageServlet">Homepage</a>
                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                    <li class="nav-item">
                      <a class="nav-link active" aria-current="page" style="color : white;" href="MyProfileServlet">Profile</a>
                    </li>
                    <li class="nav-item">
-                     <a class="nav-link" style="color : white;" href="convert.jsp">History Convert</a>
+                     <a class="nav-link" style="color : white;" href="ConvertfileServlet">History Convert</a>
                    </li>
                    <li class="nav-item">
                      <a class="nav-link" style="color : white;" href="LogoutServlet">Logout</a>
@@ -62,32 +61,35 @@
 			                   <tbody>
 
 				                   <%
-				                   Connection conn = ConnectDB.getMySQLConnection();
-				                   
-				                  
-				                   PreparedStatement ps = conn.prepareStatement("select fileId, fileName from uploadfiles where fileStatus = 0 ");
-                                   
-				                   ResultSet rs = ps.executeQuery();
-
-				                   while (rs.next()) {
-				                   %>
-				                   <tr>
-				                          <td class="text-center"><%= rs.getInt("fileId") %></td>
-				                          
-					                      <td class="text-center"><%= rs.getString("fileName") %></td>
-					                      <td>
-					                         <form method="post" action="ConvertfileServlet" >
-					                            <input type="hidden" name="fileName" value="<%= rs.getString("fileName") %>">
-					                            <input type="hidden" name="fileId" value="<%= rs.getInt("fileId") %>">
-					                            <div class="text-center">
-							                      <button  class="btn btn-success" type="submit" >Convert</button>
-							                    </div>
-					                         </form>
-						                  </td>
-				                   </tr>
-				                   <%
-				                   }
-				                   %>
+				                   List<fileUpload> uploadFiles = (List<fileUpload>) request.getAttribute("fileUploads");
+									if (uploadFiles != null && !uploadFiles.isEmpty()) {
+    								for (fileUpload fiUpload : uploadFiles) {
+        							%>
+        <tr>
+            <td class="text-center"><%= fiUpload.getFid() %></td>
+            <td class="text-center"><%= fiUpload.getFname() %></td>
+            <td>
+                <form method="post" action="ConvertfileServlet">
+                    <input type="hidden" name="fileName" value="<%= fiUpload.getFname() %>">
+                    <input type="hidden" name="fileId" value="<%= fiUpload.getFid() %>">
+                    <div class="text-center">
+                        <button class="btn btn-success" type="submit">Convert</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        <%
+    }
+} else {
+    %>
+    <tr>
+        <td colspan="3">No files uploaded</td>
+    </tr>
+    <%
+}
+%>
+								
+				                 
 			                   </tbody>
 		                   </table>
 						<form method="post" action="UploadfileServlet" enctype="multipart/form-data">

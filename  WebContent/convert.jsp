@@ -1,3 +1,5 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
@@ -28,14 +30,14 @@
 	 <header>
 	 <nav class="navbar navbar-expand-lg bg-primary">
              <div class="container-fluid">
-               <a class="navbar-brand" style="color : white;" href="index.jsp">Homepage</a>
+               <a class="navbar-brand" style="color : white;" href="HomepageServlet">Homepage</a>
                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                    <li class="nav-item">
                      <a class="nav-link active" aria-current="page" style="color : white;" href="MyProfileServlet">Profile</a>
                    </li>
                    <li class="nav-item">
-                     <a class="nav-link" style="color : white;" href="convert.jsp">History Convert</a>
+                     <a class="nav-link" style="color : white;" href="ConvertfileServlet">History Convert</a>
                    </li>
                    <li class="nav-item">
                      <a class="nav-link" style="color : white;" href="LogoutServlet">Logout</a>
@@ -70,36 +72,31 @@
 			                   <tbody>
 
 				                   <%
-				                   Connection conn = ConnectDB.getMySQLConnection();
-				                   
-				                   int userId = (int)session.getAttribute("id");
-				                   
-				                   PreparedStatement ps = conn.prepareStatement("select fileId, fileName from uploadfiles where fileStatus = 1 and userId = ?");
-				                   ps.setInt(1,userId);
-				                   ResultSet rs = ps.executeQuery();
-
-				                   while (rs.next()) {
-				                	   String fname = rs.getString("fileName").split("\\.")[0] + ".docx";
-				                	   if (fname.length() > 20) {
-				                           fname = fname.substring(0, 20) + "...docx";
-				                       }
+				                   List<fileUpload> uploadFiles = (List<fileUpload>) request.getAttribute("fileUploads");
+									if (uploadFiles != null && !uploadFiles.isEmpty()) {
+   									for (fileUpload fiUpload : uploadFiles) {
 				                   %>
 				                   <tr>
-				                          <td class="text-center"><%= rs.getInt("fileId") %></td>
+				                          <td class="text-center"><%= fiUpload.getFid() %></td>
 				                          
-					                      <td class="text-center"><%= fname %></td>
+					                      <td class="text-center"><%= fiUpload.getFname() %></td>
 					                      <td>
 					                         <form method="post" action="DownloadFileServlet">
-					                            <input type="hidden" name="fileId" value="<%= rs.getInt("fileId") %>">
+					                            <input type="hidden" name="fileId" value="<%= fiUpload.getFid() %>">
 					                            <div class="text-center">
                                                    <button class="btn btn-primary" type="submit">Download</button>
 							                    </div>
 					                         </form>
 						                  </td>
 				                   </tr>
-				                   <%
-				                   }
-				                   %>
+				                  <%
+    										}
+										} else {
+										%>
+    										<h1>No files available.</h1>
+								<%
+									}
+								%>
 			                   </tbody>
 		                   </table>
 						

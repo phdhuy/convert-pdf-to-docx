@@ -19,7 +19,11 @@ public class RegisterServlet extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	UserBO userBO = new UserBOImpl();
+	private UserBO userBO;
+	
+	public RegisterServlet() {
+		this.userBO = new UserBOImpl();
+	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -22,4 +22,7 @@ public interface FileDao {
 	List<fileUpload> getAllMyFiles(int userId);
 	
 	List<fileUpload> getAllMyFilesConverted(int userId);
+	
+	//queue
+	List<fileUpload> getFileFromQueue(int userId);
 }

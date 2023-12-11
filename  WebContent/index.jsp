@@ -37,6 +37,9 @@
                      <a class="nav-link" style="color : white;" href="ConvertfileServlet">History Convert</a>
                    </li>
                    <li class="nav-item">
+                     <a class="nav-link" style="color : white;" href="GetFileFromQueueServlet">Convert Queue</a>
+                   </li>
+                   <li class="nav-item">
                      <a class="nav-link" style="color : white;" href="LogoutServlet">Logout</a>
                    </li>
                  </ul>

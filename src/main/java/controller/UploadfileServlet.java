@@ -42,13 +42,14 @@ public class UploadfileServlet extends HttpServlet {
     	List<fileUpload> fileUploads = new ArrayList<>();
     	HttpSession session = request.getSession();
     	int userId = (int)session.getAttribute("id");
-		fileUploads = fileBo.getAllMyFiles(userId);
-		request.setAttribute("fileUploads", fileUploads);
+		
 		
         if (request.getPart("files").getSize() != 0L) {
         	session = request.getSession();
         	fileBo.processUpload(userId,request);
         	request.getSession().setAttribute("message", "Upload successfull!");
+        	fileUploads = fileBo.getAllMyFiles(userId);
+    		request.setAttribute("fileUploads", fileUploads);
         	RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
             dispatcher.forward(request, response);     
           }

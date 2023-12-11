@@ -150,4 +150,27 @@ public class FileDaoImpl implements FileDao  {
 	        }
 		return fileUploads;
 	}
+	@Override
+	public List<fileUpload> getFileFromQueue(int userId)
+	{
+		List<fileUpload> fileInQueue = new ArrayList<fileUpload>();
+		try (Connection conn = ConnectDB.getMySQLConnection();
+	            PreparedStatement pstm = conn.prepareStatement("select fileId, fileName from uploadFiles where fileStatus = 2 and userId = ?")) {
+				pstm.setInt(1, userId);
+				ResultSet rs = pstm.executeQuery();
+				while (rs.next()) {
+					fileUpload fileUpload = new fileUpload();
+					int fileId = rs.getInt("fileId");
+					String fileName = rs.getString("fileName");
+					
+					fileUpload.setFid(fileId);
+					fileUpload.setFname(fileName);
+					
+					fileInQueue.add(fileUpload);
+				}
+	        } catch (ClassNotFoundException | SQLException e) {
+	            e.printStackTrace();	      
+	        }
+		return fileInQueue;
+	}
 }

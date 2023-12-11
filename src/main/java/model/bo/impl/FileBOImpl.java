@@ -24,8 +24,7 @@ import com.spire.pdf.FileFormat;
 import com.spire.pdf.PdfDocument;
 
 public class FileBOImpl implements FileBO {
-	private HttpServletRequest request;
-    private User user;
+
     
     private static final Queue<fileUpload> fileUploadsQueue = new ConcurrentLinkedQueue<>();
     private FileDao fileDao;
@@ -37,10 +36,7 @@ public class FileBOImpl implements FileBO {
     
     //Upload file
     
-    public FileBOImpl(HttpServletRequest request, User user){
-        this.request = request;
-        this.user = user;
-    }
+
 	@Override
 	public void processUpload(int userId, HttpServletRequest req) {
 		try {
@@ -116,17 +112,18 @@ public class FileBOImpl implements FileBO {
 		if (fileUpload.isPresent()) {
 	        fileUploadsQueue.add(fileUpload.get());
 	        System.out.println("Push file " + fileUpload.get().getFid() + " to the queue successfully!");
+	        fileDao.changeStatus(fileId,2);
 	    }
 	}
 	
 	
 	public void checkFileInQueue() {
 	    while (true) {
-	    	System.out.println(fileUploadsQueue.size());
 	    	if (!fileUploadsQueue.isEmpty()) {
 	            fileUpload file = fileUploadsQueue.poll();
 	            convertFiles(file.getFname(), file.getFid());
 	            System.out.println("Processed file " + file.getFid() + " from the queue.");
+	            fileDao.changeStatus(file.getFid(),1);
 	        	}
 	    	try {
 				Thread.sleep(1000);
@@ -153,5 +150,9 @@ public class FileBOImpl implements FileBO {
 	public List<fileUpload> getAllMyFilesConverted(int userId) {
 		// TODO Auto-generated method stub
 		return fileDao.getAllMyFilesConverted(userId);
+	}
+	@Override
+	public List<fileUpload> getFileFromQueue(int userId){
+		return fileDao.getFileFromQueue(userId);
 	}
 }

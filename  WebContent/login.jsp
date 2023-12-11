@@ -21,9 +21,9 @@
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <input type="submit" value="Login">
-        </form>
-        
+            <input type="submit" value="Login"><br>
+            
+        </form> 
         <a class="nav-link register-link" href="register.jsp">Register</a>
     </div>
 

@@ -69,13 +69,13 @@
 				                   <tr>
 					                   <th class="text-center" scope="col">Id</th>
 					                   <th class="text-center" scope="col">File Name</th>
-                                       <th class="text-center" scope="col">Download</th>
+                                       <th class="text-center" scope="col"></th>
 				                   </tr>
 			                   </thead>
 			                   <tbody>
 
 				                   <%
-				                   List<fileUpload> uploadFiles = (List<fileUpload>) request.getAttribute("fileUploads");
+				                   List<fileUpload> uploadFiles = (List<fileUpload>) request.getAttribute("fileInQueue");
 									if (uploadFiles != null && !uploadFiles.isEmpty()) {
    									for (fileUpload fiUpload : uploadFiles) {
 				                   %>
@@ -84,10 +84,10 @@
 				                          
 					                      <td class="text-center"><%= fiUpload.getFname() %></td>
 					                      <td>
-					                         <form method="post" action="DownloadFileServlet">
+					                         <form method="post" action="GetFileFromQueueServlet">
 					                            <input type="hidden" name="fileId" value="<%= fiUpload.getFid() %>">
 					                            <div class="text-center">
-                                                   <button class="btn btn-primary" type="submit">Download</button>
+					                              <h5 class="text-center text-primary">Convert processing....</h5>
 							                    </div>
 					                         </form>
 						                  </td>

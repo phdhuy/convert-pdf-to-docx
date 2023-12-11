@@ -18,7 +18,7 @@ public interface FileBO {
 	
 	//Dowload file
     Optional<fileUpload> getFile(int fid);
-    
+   // Queue
     void pushFileToQueue(String fileName, int fileId);
     
     void checkFileInQueue();
@@ -28,4 +28,6 @@ public interface FileBO {
     List<fileUpload> getAllMyFiles(int userId);
     
     List<fileUpload> getAllMyFilesConverted(int userId);
+    
+    List<fileUpload> getFileFromQueue(int userId);
 }
